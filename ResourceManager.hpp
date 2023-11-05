@@ -5,25 +5,32 @@
 class ResourceManager
 {
 private:
-    Resource resource; // Zarządzany obiekt typu Resource
+    Resource* resource; // Zarządzany obiekt typu Resource
 
 public:
     // Konstruktor domyślny inicjalizujący zarządzany obiekt
-    ResourceManager() : resource() {}
-
-    // Metoda get, która zwraca wynik zawołania metody get obiektu Resource
-    double get() {
-        return resource.get();
-    }
-
+    ResourceManager() : resource(new Resource()) {}
+    
     // Konstruktor kopiujący
-    ResourceManager(const ResourceManager& other) : resource(other.resource) {}
-
+    ResourceManager(const ResourceManager& other) : resource(new Resource(*(other.resource))) {}
+    
     // Operator przypisania
     ResourceManager& operator=(const ResourceManager& other) {
-        if (this != &other) {
-            resource = other.resource;
+        if (this == &other) {
+            return *this;
         }
+        delete resource;
+        resource = new Resource(*(other.resource));
         return *this;
+    }
+
+    // Destruktor, który zadba o zwolnienie zasobów
+    ~ResourceManager() {
+        delete resource;
+    }
+
+    // Metoda get, która zwraca wynik zawołania metody get obiektu Resource
+    double get() const {
+        return resource->get();
     }
 };
