@@ -13,7 +13,7 @@ public:
     
     // Konstruktor kopiujący
     ResourceManager(const ResourceManager& other) : resource(new Resource(*(other.resource))) {}
-    
+
     // Operator przypisania
     ResourceManager& operator=(const ResourceManager& other) {
         if (this == &other) {
@@ -23,6 +23,23 @@ public:
         resource = new Resource(*(other.resource));
         return *this;
     }
+
+    // Konstruktor przenoszenia
+    ResourceManager(ResourceManager&& other) noexcept : resource(other.resource) {
+        other.resource = nullptr;
+    }
+
+    // Operator przypisania
+    ResourceManager& operator=(ResourceManager&& other) noexcept {
+        if (this == &other) {
+            return *this;
+        }
+        delete resource;
+        resource = other.resource;
+        other.resource = nullptr;
+        return *this;
+    }
+
 
     // Destruktor, który zadba o zwolnienie zasobów
     ~ResourceManager() {
